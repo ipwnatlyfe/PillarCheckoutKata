@@ -2,24 +2,31 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public class Item {
-	private double unitPrice = 0.00;
+	private BigDecimal unitPrice = new BigDecimal("0.00");
 	private String name = "";
 	private BigDecimal weight = new BigDecimal("0.00");
 	private static int DECIMAL_PLACES = 2;
 	private static RoundingMode ROUNDING = RoundingMode.HALF_EVEN;
 	
-	private BigDecimal roundHundreths(BigDecimal num)
+	public BigDecimal roundHundreths(BigDecimal num)
 	{
 		return num.setScale(DECIMAL_PLACES,ROUNDING);
 	}
 	
 	
-	public void setUnitPrice(Double price)
+	public void setUnitPrice(BigDecimal price)
 	{
-		this.unitPrice = price;
+		this.unitPrice = roundHundreths(price);
 	}
 	
-	public Double getUnitPrice()
+	// Added a secondary method to set price to accept a string to make it more convenient
+	public void setUnitPrice(String price)
+	{
+		BigDecimal newPrice = new BigDecimal(price);
+		this.unitPrice = roundHundreths(newPrice);
+	}
+	
+	public BigDecimal getUnitPrice()
 	{
 		return this.unitPrice;
 	}

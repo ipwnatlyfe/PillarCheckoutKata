@@ -17,14 +17,14 @@ public class CheckoutBasketTest {
 	public void whenAnItemIsScannedTotalIncreasedByUnitPrice()
 	{
 		Item myItem = new Item();
-		Double prescanTotal = 0.0;
+		BigDecimal prescanTotal = new BigDecimal("0.0");
 		
-		myItem.setUnitPrice(1.0);
+		myItem.setUnitPrice("1.0");
 		
 		prescanTotal = basket.getTotal();
 		basket.scan(myItem);
 		
-		assertEquals("1.0", Double.toString(basket.getTotal() - prescanTotal));
+		assertEquals("1.00", basket.getTotal().subtract(prescanTotal).toString());
 
 	}
 	
@@ -49,6 +49,20 @@ public class CheckoutBasketTest {
 		
 		assertEquals("2.50", myItem.getWeight().toString());
 		
+	}
+	
+	@Test
+	public void whenAnItemIsScannedTwiceTotalCorrect()
+	{
+		Item myItem = new Item();
+		
+		myItem.setName("soup");
+		myItem.setUnitPrice("3.50");
+		
+		basket.scan(myItem);
+		basket.scan(myItem);
+		
+		assertEquals("7.00", basket.getTotal().toString());
 	}
 
 }
