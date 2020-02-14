@@ -1,5 +1,5 @@
 import static org.junit.Assert.assertEquals;
-
+import java.math.BigDecimal;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,6 +37,18 @@ public class CheckoutBasketTest {
 		
 		assertEquals(false, basket.itemInBasket("beef"));
 		assertEquals(true, basket.itemInBasket("Chicken Soup"));
+	}
+	
+	@Test
+	public void whenAnItemIsScannedQuantityIsUpdated()
+	{
+		Item myItem = new Item();
+		BigDecimal unitWeight = new BigDecimal("2.50");
+		
+		myItem.setWeight(unitWeight);
+		
+		assertEquals("2.50", myItem.getWeight().toString());
+		
 	}
 
 }
