@@ -82,5 +82,24 @@ public class CheckoutBasketTest {
 		assertEquals("4.80", basket.getTotal().toString());
 		
 	}
+	
+	@Test
+	public void addAnItemToListThenMakeSureItCanBeRemovedAndTotalUpdated()
+	{
+		Item myItem = new Item();
+		
+		myItem.setName("beef");
+		myItem.setWeight("3.25");
+		myItem.setUnitPrice("4.00");
+		
+		basket.scan(myItem);
+		
+		assertEquals("13.00", basket.getTotal().toString());
+		assertTrue(basket.itemInBasket("beef")>=0);
+		
+		basket.remove(myItem);
+		assertEquals("0.00", basket.getTotal().toString());
+		assertEquals(-1,basket.itemInBasket("beef"));
+	}
 
 }

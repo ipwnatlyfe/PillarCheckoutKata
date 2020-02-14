@@ -8,6 +8,11 @@ public class CheckoutBasket {
 	private BigDecimal calcBasketTotal()
 	{
 		BigDecimal total = Item.roundHundreths(new BigDecimal("0.00"));
+		if(this.basketList.size() == 0)
+		{
+			return Item.roundHundreths(total);
+		}
+		
 		
 		for(int i=0; i<this.basketList.size(); i++)
 		{
@@ -24,6 +29,7 @@ public class CheckoutBasket {
 			}
 						
 		}
+		
 		
 		// Have to reset the scale to two decimal points after doing multiplication
 		return Item.roundHundreths(total);
@@ -65,7 +71,8 @@ public class CheckoutBasket {
 		return this.total;
 	}
 
-	public int itemInBasket(String itemName) {
+	public int itemInBasket(String itemName) 
+	{
 		
 		for(int i=0; i<basketList.size(); i++)
 		{
@@ -75,6 +82,17 @@ public class CheckoutBasket {
 			}
 		}
 		return -1;
+	}
+	
+	public void remove(Item myItem)
+	{
+		int index = itemInBasket(myItem.getName());
+		
+		if(index != -1)
+		{
+			basketList.remove(index);
+			this.total = calcBasketTotal();
+		}
 	}
 	
 	
