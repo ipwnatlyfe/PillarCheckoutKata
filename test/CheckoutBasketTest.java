@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import org.junit.Before;
 import org.junit.Test;
 
+
 public class CheckoutBasketTest {
 	
 	CheckoutBasket basket;
@@ -124,6 +125,36 @@ public class CheckoutBasketTest {
 		basket.scan(myItem2);
 		
 		assertEquals("3.70", basket.getTotal().toString());
+		
+	}
+	
+	@Test
+	public void buyNItemsGetMAtXPercentOff()
+	{
+		Item myItem = new Item();
+		Item.Special currSpecial = myItem.new Special();
+		
+		myItem.setName("chicken nuggets");
+		myItem.setUnitPrice("2.00");
+		
+		currSpecial.setType(Item.specialType.BUY_N_GET_M_AT_X_PERCENT_OFF);
+		currSpecial.setDiscPercentage(new BigDecimal("50"));
+		currSpecial.setNumNeeded(new BigDecimal("3"));
+		currSpecial.setNumUpTo(new BigDecimal("3"));
+
+		myItem.setCurrSpecial(currSpecial);
+		
+		basket.scan(myItem);
+		basket.scan(myItem);
+		basket.scan(myItem);
+		basket.scan(myItem);
+		basket.scan(myItem);
+		basket.scan(myItem);
+		
+		//Assuming that to get the discount, the promotion requires that the
+		// full N in get N at X% off is required
+		
+		assertEquals("9.00", basket.getTotal().toString());
 		
 	}
 

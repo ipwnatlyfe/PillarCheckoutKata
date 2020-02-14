@@ -7,7 +7,10 @@ public class Item {
 	private BigDecimal weight = roundHundreths(new BigDecimal("0.00"));
 	private BigDecimal quantity = roundHundreths(new BigDecimal("1.00"));
 	private BigDecimal markdown = roundHundreths(new BigDecimal("0.00"));
+	private Special currSpecial = new Special();
 	
+	
+
 	private static int DECIMAL_PLACES = 2;
 	private static RoundingMode ROUNDING = RoundingMode.HALF_EVEN;
 	
@@ -98,6 +101,62 @@ public class Item {
 	public BigDecimal getMarkdown()
 	{
 		return this.markdown;
+	}
+	
+	public Special getCurrSpecial() {
+		return currSpecial;
+	}
+
+	public void setCurrSpecial(Special currSpecial) {
+		this.currSpecial = currSpecial;
+	}
+	
+	enum specialType {
+		NONE, BUY_N_GET_M_AT_X_PERCENT_OFF
+	}
+	
+	public class Special {
+		specialType type = specialType.NONE;
+		private BigDecimal numNeeded = new BigDecimal("0.00");
+		private BigDecimal numUpTo = new BigDecimal("0.00");
+		private BigDecimal discPercentage = new BigDecimal("0.00");
+		
+		public BigDecimal getNumNeeded() 
+		{
+			return numNeeded;
+		}
+		public void setNumNeeded(BigDecimal numNeeded) 
+		{
+			this.numNeeded = numNeeded;
+		}
+		public BigDecimal getNumUpTo() 
+		{
+			return numUpTo;
+		}
+		public void setNumUpTo(BigDecimal numUpTo) 
+		{
+			this.numUpTo = numUpTo;
+		}
+		public BigDecimal getDiscPercentage() 
+		{
+			return discPercentage;
+		}
+		public void setDiscPercentage(BigDecimal discPercentage) 
+		{
+			this.discPercentage = discPercentage;
+		}
+		
+		
+		public void setType(specialType type)
+		{
+			this.type = type;
+		}
+		public specialType getType()
+		{
+			return this.type;
+		}
+		
+		
 	}
 	
 	

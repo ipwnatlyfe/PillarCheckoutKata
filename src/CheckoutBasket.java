@@ -5,6 +5,7 @@ public class CheckoutBasket {
 	private BigDecimal total = new BigDecimal("0.00");
 	private ArrayList<Item> basketList= new ArrayList<Item>();
 	
+	//Iterate through entire arraylist of items and add up the items
 	private BigDecimal calcBasketTotal()
 	{
 		BigDecimal tempWeight = new BigDecimal("0.00");
@@ -13,6 +14,9 @@ public class CheckoutBasket {
 		BigDecimal tempMarkdown = new BigDecimal("0.00");
 		
 		BigDecimal total = Item.roundHundreths(new BigDecimal("0.00"));
+		
+		// If there is nothing in the basket, return total immediately
+		// Should be zero
 		if(this.basketList.size() == 0)
 		{
 			return Item.roundHundreths(total);
@@ -28,6 +32,14 @@ public class CheckoutBasket {
 			
 			//Modify price to reflect the markdown (assuming per unit or per pound prices)
 			tempPrice = tempPrice.subtract(tempMarkdown);
+			
+			//Price can't go below 0, so if the markdown makes it negative, set
+			// the price to 0
+			if(tempPrice.compareTo(BigDecimal.ZERO) < 0)
+			{
+				tempPrice = Item.roundHundreths(BigDecimal.ZERO);
+			}
+			
 			
 			if(tempWeight.equals( Item.roundHundreths(BigDecimal.ZERO)))
 			{
