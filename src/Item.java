@@ -6,6 +6,7 @@ public class Item {
 	private String name = "";
 	private BigDecimal weight = roundHundreths(new BigDecimal("0.00"));
 	private BigDecimal quantity = roundHundreths(new BigDecimal("1.00"));
+	private BigDecimal markdown = roundHundreths(new BigDecimal("0.00"));
 	
 	private static int DECIMAL_PLACES = 2;
 	private static RoundingMode ROUNDING = RoundingMode.HALF_EVEN;
@@ -15,11 +16,12 @@ public class Item {
 		
 	}
 	
-	public Item(BigDecimal unitPrice, String name, BigDecimal weight)
+	public Item(BigDecimal unitPrice, String name, BigDecimal weight, BigDecimal markdown)
 	{
 		this.unitPrice = roundHundreths(unitPrice);
 		this.name = name;
 		this.weight = roundHundreths(weight);
+		this.markdown = roundHundreths(markdown);
 		
 	}
 	
@@ -80,6 +82,22 @@ public class Item {
 	public BigDecimal getQuantity()
 	{
 		return this.quantity;
+	}
+	
+	public void setMarkdown(BigDecimal markdown)
+	{
+		this.markdown = markdown;
+	}
+	
+	public void setMarkdown(String markdown)
+	{
+		BigDecimal newMarkdown = new BigDecimal(markdown);
+		this.markdown = roundHundreths(newMarkdown);
+	}
+	
+	public BigDecimal getMarkdown()
+	{
+		return this.markdown;
 	}
 	
 	

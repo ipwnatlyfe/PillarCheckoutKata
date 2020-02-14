@@ -7,6 +7,11 @@ public class CheckoutBasket {
 	
 	private BigDecimal calcBasketTotal()
 	{
+		BigDecimal tempWeight = new BigDecimal("0.00");
+		BigDecimal tempQuantity = new BigDecimal("0.00");
+		BigDecimal tempPrice = new BigDecimal("0.00");
+		BigDecimal tempMarkdown = new BigDecimal("0.00");
+		
 		BigDecimal total = Item.roundHundreths(new BigDecimal("0.00"));
 		if(this.basketList.size() == 0)
 		{
@@ -16,16 +21,23 @@ public class CheckoutBasket {
 		
 		for(int i=0; i<this.basketList.size(); i++)
 		{
+			tempWeight = this.basketList.get(i).getWeight();   
+			tempQuantity = this.basketList.get(i).getQuantity();
+			tempPrice = this.basketList.get(i).getUnitPrice();
+			tempMarkdown = this.basketList.get(i).getMarkdown();  
 			
-			if(this.basketList.get(i).getWeight().equals( Item.roundHundreths(BigDecimal.ZERO)))
+			//Modify price to reflect the markdown (assuming per unit or per pound prices)
+			tempPrice = tempPrice.subtract(tempMarkdown);
+			
+			if(tempWeight.equals( Item.roundHundreths(BigDecimal.ZERO)))
 			{
 				
 				
-				total = total.add(this.basketList.get(i).getUnitPrice().multiply(this.basketList.get(i).getQuantity()));
+				total = total.add(tempPrice.multiply(tempQuantity));
 			}
 			else
 			{
-				total = total.add(this.basketList.get(i).getUnitPrice().multiply(this.basketList.get(i).getWeight()));
+				total = total.add(tempPrice.multiply(tempWeight));
 			}
 						
 		}
@@ -43,7 +55,7 @@ public class CheckoutBasket {
 		// Need to make sure the same reference isn't added multiple times	
 		if(itemIndex == -1)
 		{
-			Item newItem = new Item(scannedItem.getUnitPrice(),scannedItem.getName() ,scannedItem.getWeight());
+			Item newItem = new Item(scannedItem.getUnitPrice(),scannedItem.getName() ,scannedItem.getWeight(), scannedItem.getMarkdown());
 			basketList.add(newItem);
 		}
 		else

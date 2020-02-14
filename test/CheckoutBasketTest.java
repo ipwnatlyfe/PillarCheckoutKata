@@ -101,5 +101,30 @@ public class CheckoutBasketTest {
 		assertEquals("0.00", basket.getTotal().toString());
 		assertEquals(-1,basket.itemInBasket("beef"));
 	}
+	
+	@Test
+	public void addMarkdownToNonWeighedItemAndTotalUpdated()
+	{
+		Item myItem = new Item();
+		Item myItem2 = new Item();
+		
+		myItem.setName("chicken nuggets");
+		myItem.setUnitPrice("2.00");
+		myItem.setMarkdown("1.00");
+		
+		myItem2.setName("beef");
+		myItem2.setUnitPrice("2.00");
+		myItem2.setWeight("2.7");
+		myItem2.setMarkdown("1.00");
+		
+		basket.scan(myItem);
+		
+		assertEquals("1.00", basket.getTotal().toString());
+		
+		basket.scan(myItem2);
+		
+		assertEquals("3.70", basket.getTotal().toString());
+		
+	}
 
 }
