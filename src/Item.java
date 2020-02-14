@@ -2,13 +2,28 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public class Item {
-	private BigDecimal unitPrice = new BigDecimal("0.00");
+	private BigDecimal unitPrice = roundHundreths(new BigDecimal("0.00"));
 	private String name = "";
-	private BigDecimal weight = new BigDecimal("0.00");
+	private BigDecimal weight = roundHundreths(new BigDecimal("0.00"));
+	private BigDecimal quantity = roundHundreths(new BigDecimal("1.00"));
+	
 	private static int DECIMAL_PLACES = 2;
 	private static RoundingMode ROUNDING = RoundingMode.HALF_EVEN;
 	
-	public BigDecimal roundHundreths(BigDecimal num)
+	public Item()
+	{
+		
+	}
+	
+	public Item(BigDecimal unitPrice, String name, BigDecimal weight)
+	{
+		this.unitPrice = roundHundreths(unitPrice);
+		this.name = name;
+		this.weight = roundHundreths(weight);
+		
+	}
+	
+	public static BigDecimal roundHundreths(BigDecimal num)
 	{
 		return num.setScale(DECIMAL_PLACES,ROUNDING);
 	}
@@ -46,9 +61,25 @@ public class Item {
 		this.weight = roundHundreths(weight);
 	}
 	
+	public void setWeight(String weight)
+	{
+		BigDecimal newWeight = new BigDecimal(weight);
+		this.weight = roundHundreths(newWeight);
+	}
+	
 	public BigDecimal getWeight()
 	{
 		return this.weight;
+	}
+	
+	public void setQuantity(BigDecimal quantity)
+	{
+		this.quantity = quantity;
+	}
+	
+	public BigDecimal getQuantity()
+	{
+		return this.quantity;
 	}
 	
 	

@@ -1,4 +1,6 @@
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.math.BigDecimal;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,12 +37,12 @@ public class CheckoutBasketTest {
 		myItem.setName("Chicken Soup");
 		basket.scan(myItem);
 		
-		assertEquals(false, basket.itemInBasket("beef"));
-		assertEquals(true, basket.itemInBasket("Chicken Soup"));
+		assertEquals(-1, basket.itemInBasket("beef"));
+		assertTrue(basket.itemInBasket("Chicken Soup")>=0);
 	}
 	
 	@Test
-	public void whenAnItemIsScannedQuantityIsUpdated()
+	public void whenAnItemIsScannedWeightIsUpdated()
 	{
 		Item myItem = new Item();
 		BigDecimal unitWeight = new BigDecimal("2.50");
@@ -63,6 +65,22 @@ public class CheckoutBasketTest {
 		basket.scan(myItem);
 		
 		assertEquals("7.00", basket.getTotal().toString());
+	}
+	
+	@Test
+	public void whenAnItemWithWeightIsScannedTwiceTotalCorrect()
+	{
+		Item myItem = new Item();
+		
+		myItem.setName("chicken");
+		myItem.setWeight("1.20");
+		myItem.setUnitPrice("2.00");
+		
+		basket.scan(myItem);
+		basket.scan(myItem);
+		
+		assertEquals("4.80", basket.getTotal().toString());
+		
 	}
 
 }
