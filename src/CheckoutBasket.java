@@ -12,6 +12,7 @@ public class CheckoutBasket {
 		BigDecimal tempQuantity = new BigDecimal("0.00");
 		BigDecimal tempPrice = new BigDecimal("0.00");
 		BigDecimal tempMarkdown = new BigDecimal("0.00");
+		Item.Special tempSpecial;
 		
 		BigDecimal total = Item.roundHundreths(new BigDecimal("0.00"));
 		
@@ -29,6 +30,7 @@ public class CheckoutBasket {
 			tempQuantity = this.basketList.get(i).getQuantity();
 			tempPrice = this.basketList.get(i).getUnitPrice();
 			tempMarkdown = this.basketList.get(i).getMarkdown();  
+			tempSpecial = this.basketList.get(i).getCurrSpecial();
 			
 			//Modify price to reflect the markdown (assuming per unit or per pound prices)
 			tempPrice = tempPrice.subtract(tempMarkdown);
@@ -41,15 +43,37 @@ public class CheckoutBasket {
 			}
 			
 			
+			//If the weight for the selected item is 0, then add another count to the quantity of the item
+			//If the weight is nonzero, then use the weight as the quantifier instead.
 			if(tempWeight.equals( Item.roundHundreths(BigDecimal.ZERO)))
 			{
-				
-				
 				total = total.add(tempPrice.multiply(tempQuantity));
 			}
 			else
 			{
 				total = total.add(tempPrice.multiply(tempWeight));
+			}
+			
+			//After having the unmodified (other than markdown) check if there is a special
+			if(tempSpecial.getType()== Item.specialType.BUY_N_GET_M_AT_X_PERCENT_OFF)
+			{
+				if((tempQuantity.compareTo(tempSpecial.getNumNeeded()) >= 0) && ((tempQuantity.subtract(tempSpecial.getNumNeeded())).compareTo(tempSpecial.getNumUpTo()) >= 0))
+				{
+					BigDecimal tempValue = new BigDecimal("100");
+					
+					//Divide the disc by 100 to convert into a percentage, eventually
+					// need to throw this in it's own function in a helper class
+					tempValue = tempSpecial.getDiscPercentage().divide(tempValue);
+					
+					
+					//unit price * percentage discount * number of items for promotion
+					tempValue = tempValue.multiply(tempPrice.multiply(tempSpecial.getNumUpTo()));
+					
+					
+					
+					total = total.subtract(tempValue);
+				}
+				
 			}
 						
 		}
@@ -68,6 +92,7 @@ public class CheckoutBasket {
 		if(itemIndex == -1)
 		{
 			Item newItem = new Item(scannedItem.getUnitPrice(),scannedItem.getName() ,scannedItem.getWeight(), scannedItem.getMarkdown());
+			newItem.setCurrSpecial(scannedItem.getCurrSpecial());
 			basketList.add(newItem);
 		}
 		else
@@ -84,6 +109,7 @@ public class CheckoutBasket {
 				basketList.get(itemIndex).setQuantity(scannedItem.getQuantity().add(basketList.get(itemIndex).getQuantity()));
 			}
 			
+			basketList.get(itemIndex).setCurrSpecial(scannedItem.getCurrSpecial());
 			
 		}
 		
