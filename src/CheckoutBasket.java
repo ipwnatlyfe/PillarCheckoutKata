@@ -12,6 +12,7 @@ public class CheckoutBasket {
 		BigDecimal tempQuantity = new BigDecimal("0.00");
 		BigDecimal tempPrice = new BigDecimal("0.00");
 		BigDecimal tempMarkdown = new BigDecimal("0.00");
+		BigDecimal tempValue;
 		Item.Special tempSpecial;
 		
 		BigDecimal total = Item.roundHundreths(new BigDecimal("0.00"));
@@ -55,26 +56,37 @@ public class CheckoutBasket {
 			}
 			
 			//After having the unmodified (other than markdown) check if there is a special
-			if(tempSpecial.getType()== Item.specialType.BUY_N_GET_M_AT_X_PERCENT_OFF)
+			if(tempSpecial.getType()== Item.specialType.BUY_N_GET_M_AT_X_PERCENT_OFF && tempWeight.compareTo(BigDecimal.ZERO) <= 0)
 			{
 				if((tempQuantity.compareTo(tempSpecial.getNumNeeded()) >= 0) && ((tempQuantity.subtract(tempSpecial.getNumNeeded())).compareTo(tempSpecial.getNumUpTo()) >= 0))
 				{
-					BigDecimal tempValue = new BigDecimal("100");
-					
-					//Divide the disc by 100 to convert into a percentage, eventually
-					// need to throw this in it's own function in a helper class
-					tempValue = tempSpecial.getDiscPercentage().divide(tempValue);
-					
-					
+					//TODO: Add check to make sure the percentages go from 0 to 100
 					//unit price * percentage discount * number of items for promotion
-					tempValue = tempValue.multiply(tempPrice.multiply(tempSpecial.getNumUpTo()));
+					//tempValue = tempValue.multiply(tempPrice.multiply(tempSpecial.getNumUpTo()));
 					
-					
-					
+					tempValue = HelperUtils.percentage(tempSpecial.getNumUpTo(), tempSpecial.getDiscPercentage());
+					tempValue = tempValue.multiply(tempPrice);					
+										
 					total = total.subtract(tempValue);
 				}
 				
 			}
+			
+			else if(tempSpecial.getType()== Item.specialType.BUY_N_ITEMS_FOR_X_DOLLARS && tempWeight.compareTo(BigDecimal.ZERO) <= 0)
+			{				
+				 
+				if((tempQuantity.compareTo(tempSpecial.getNumNeeded()) >= 0))
+				{
+					//Subtract the full price items
+					total = total.subtract(tempQuantity.multiply(tempPrice));
+					
+					//Add the special price
+					total = total.add(tempSpecial.getSpecValue());
+				}
+				
+			}
+			
+			
 						
 		}
 		
@@ -148,3 +160,4 @@ public class CheckoutBasket {
 	
 
 }
+

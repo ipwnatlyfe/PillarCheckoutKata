@@ -112,7 +112,7 @@ public class Item {
 	}
 	
 	enum specialType {
-		NONE, BUY_N_GET_M_AT_X_PERCENT_OFF
+		NONE, BUY_N_GET_M_AT_X_PERCENT_OFF, BUY_N_ITEMS_FOR_X_DOLLARS
 	}
 	
 	public class Special {
@@ -120,7 +120,14 @@ public class Item {
 		private BigDecimal numNeeded = new BigDecimal("0.00");
 		private BigDecimal numUpTo = new BigDecimal("0.00");
 		private BigDecimal discPercentage = new BigDecimal("0.00");
+		private BigDecimal specValue = new BigDecimal("0.00");
 		
+		public BigDecimal getSpecValue() {
+			return specValue;
+		}
+		public void setSpecValue(BigDecimal specValue) {
+			this.specValue = specValue;
+		}
 		public BigDecimal getNumNeeded() 
 		{
 			return numNeeded;
