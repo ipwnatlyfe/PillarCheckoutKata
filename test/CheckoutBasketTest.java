@@ -157,5 +157,103 @@ public class CheckoutBasketTest {
 		assertEquals("9.00", basket.getTotal().toString());
 		
 	}
+	
+	@Test
+	public void buyNItemsForXDollars()
+	{
+		Item myItem = new Item();
+		Item.Special currSpecial = myItem.new Special();
+		
+		myItem.setName("Turkeys");
+		myItem.setUnitPrice("8.00");
+		
+		currSpecial.setType(Item.specialType.BUY_N_ITEMS_FOR_X_DOLLARS);
+		currSpecial.setNumNeeded(new BigDecimal("5"));
+		currSpecial.setSpecValue(new BigDecimal("35"));
+		
+		myItem.setCurrSpecial(currSpecial);
+
+		basket.scan(myItem);
+		basket.scan(myItem);
+		basket.scan(myItem);
+		basket.scan(myItem);
+		basket.scan(myItem);
+		
+		assertEquals("35.00", basket.getTotal().toString());
+		
+	}
+	
+	@Test
+	public void supportLimitOnSpecials()
+	{
+		Item myItem = new Item();
+		Item.Special currSpecial = myItem.new Special();
+		
+		myItem.setName("chicken nuggets");
+		myItem.setUnitPrice("2.00");
+		
+		currSpecial.setType(Item.specialType.BUY_N_GET_M_AT_X_PERCENT_OFF);
+		currSpecial.setDiscPercentage(new BigDecimal("100"));
+		currSpecial.setNumNeeded(new BigDecimal("3"));
+		currSpecial.setNumUpTo(new BigDecimal("3"));
+		currSpecial.setItemLimit(new BigDecimal("6"));
+
+		myItem.setCurrSpecial(currSpecial);
+		
+		basket.scan(myItem);
+		basket.scan(myItem);
+		basket.scan(myItem);
+		basket.scan(myItem);
+		basket.scan(myItem);
+		basket.scan(myItem);
+		basket.scan(myItem);
+		basket.scan(myItem);
+		basket.scan(myItem);
+		basket.scan(myItem);
+		basket.scan(myItem);
+		basket.scan(myItem);
+		
+		//Assuming that to get the discount, the promotion requires that the
+		// full N in get N at X% off is required
+		
+		assertEquals("18.00", basket.getTotal().toString());
+	}
+	
+	@Test
+	public void removeItemInvalidatingSpecial()
+	{
+		Item myItem = new Item();
+		Item.Special currSpecial = myItem.new Special();
+		
+		myItem.setName("chicken nuggets");
+		myItem.setUnitPrice("2.00");
+		
+		currSpecial.setType(Item.specialType.BUY_N_GET_M_AT_X_PERCENT_OFF);
+		currSpecial.setDiscPercentage(new BigDecimal("100"));
+		currSpecial.setNumNeeded(new BigDecimal("3"));
+		currSpecial.setNumUpTo(new BigDecimal("3"));
+		currSpecial.setItemLimit(new BigDecimal("6"));
+
+		myItem.setCurrSpecial(currSpecial);
+		
+		basket.scan(myItem);
+		basket.scan(myItem);
+		basket.scan(myItem);
+		basket.scan(myItem);
+		basket.scan(myItem);
+		basket.scan(myItem);
+		basket.scan(myItem);
+		assertEquals("8.00", basket.getTotal().toString());
+		basket.remove(myItem);
+		assertEquals("6.00", basket.getTotal().toString());
+		basket.remove(myItem);
+		assertEquals("6.00", basket.getTotal().toString());
+		basket.remove(myItem);
+		assertEquals("6.00", basket.getTotal().toString());
+		basket.remove(myItem);
+		basket.remove(myItem);
+		assertEquals("4.00", basket.getTotal().toString());
+		
+	}
 
 }
