@@ -1,4 +1,5 @@
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 
 public class CheckoutBasket {
@@ -12,7 +13,8 @@ public class CheckoutBasket {
 		BigDecimal tempQuantity = new BigDecimal("0.00");
 		BigDecimal tempPrice = new BigDecimal("0.00");
 		BigDecimal tempMarkdown = new BigDecimal("0.00");
-		BigDecimal tempValue;
+		BigDecimal tempItemLimit = new BigDecimal("0.00");
+		BigDecimal viableItems = new BigDecimal("0.00");
 		Item.Special tempSpecial;
 		
 		BigDecimal total = Item.roundHundreths(new BigDecimal("0.00"));
@@ -32,6 +34,7 @@ public class CheckoutBasket {
 			tempPrice = this.basketList.get(i).getUnitPrice();
 			tempMarkdown = this.basketList.get(i).getMarkdown();  
 			tempSpecial = this.basketList.get(i).getCurrSpecial();
+			tempItemLimit = this.basketList.get(i).getCurrSpecial().getItemLimit();
 			
 			//Modify price to reflect the markdown (assuming per unit or per pound prices)
 			tempPrice = tempPrice.subtract(tempMarkdown);
@@ -58,30 +61,59 @@ public class CheckoutBasket {
 			//After having the unmodified (other than markdown) check if there is a special
 			if(tempSpecial.getType()== Item.specialType.BUY_N_GET_M_AT_X_PERCENT_OFF && tempWeight.compareTo(BigDecimal.ZERO) <= 0)
 			{
-				if((tempQuantity.compareTo(tempSpecial.getNumNeeded()) >= 0) && ((tempQuantity.subtract(tempSpecial.getNumNeeded())).compareTo(tempSpecial.getNumUpTo()) >= 0))
+				viableItems = tempQuantity;
+				// If the number of items is greater than the number of viable items for the special, and the lmit is non-zero
+				// set to the quantity available to special to the limit
+				
+				if(tempQuantity.compareTo(tempItemLimit)>0 && tempItemLimit.compareTo(BigDecimal.ZERO) > 0)
 				{
-					//TODO: Add check to make sure the percentages go from 0 to 100
-					//unit price * percentage discount * number of items for promotion
-					//tempValue = tempValue.multiply(tempPrice.multiply(tempSpecial.getNumUpTo()));
-					
-					tempValue = HelperUtils.percentage(tempSpecial.getNumUpTo(), tempSpecial.getDiscPercentage());
-					tempValue = tempValue.multiply(tempPrice);					
-										
-					total = total.subtract(tempValue);
+					viableItems = tempItemLimit;
+				}
+				// Viable items / (N+M) is the total amount of fully utilized specials
+				BigDecimal fullSpecials = viableItems.divide(tempSpecial.getNumNeeded().add(tempSpecial.getNumUpTo()),0, RoundingMode.FLOOR);
+				
+				// Get the integer value of fullSpecials
+				fullSpecials.setScale(0,RoundingMode.FLOOR);
+				
+				// Subtract the total complete specials. (complete specials) * (number of discounted items per special) * (discount percentage) * (unit price)
+				total = total.subtract(fullSpecials.multiply(HelperUtils.percentage(tempSpecial.getNumUpTo(), tempSpecial.getDiscPercentage()).multiply(tempPrice)));
+				
+				// THere could still be a few unit items that weren't counted if they weren't part a few specials, subtract those next e.g. 
+				// if you buy N and get M and X percent off, if you get a number L < M , they should still get the discount
+				
+				viableItems = viableItems.subtract(fullSpecials.multiply(tempSpecial.getNumNeeded().add(tempSpecial.getNumUpTo())));
+				
+				if (viableItems.compareTo(tempSpecial.getNumNeeded()) >= 0 )
+				{
+					total = total.subtract(HelperUtils.percentage(viableItems.remainder(tempSpecial.getNumNeeded()), tempSpecial.getDiscPercentage()).multiply(tempPrice));
 				}
 				
+
 			}
 			
 			else if(tempSpecial.getType()== Item.specialType.BUY_N_ITEMS_FOR_X_DOLLARS && tempWeight.compareTo(BigDecimal.ZERO) <= 0)
-			{				
+			{
+				viableItems = tempQuantity;
+				// If the number of items is greater than the number of viable items for the special, and the lmit is non-zero
+				// set to the quantity available to special to the limit
+				
+				if(tempQuantity.compareTo(tempItemLimit)>0 && tempItemLimit.compareTo(BigDecimal.ZERO) > 0)
+				{
+					viableItems = tempItemLimit;
+				}
 				 
-				if((tempQuantity.compareTo(tempSpecial.getNumNeeded()) >= 0))
+				BigDecimal fullSpecials = viableItems.divide(tempSpecial.getNumNeeded(),RoundingMode.DOWN);
+				fullSpecials.setScale(0,RoundingMode.FLOOR);
+				
+				
+				if((viableItems.compareTo(tempSpecial.getNumNeeded()) >= 0))
 				{
 					//Subtract the full price items
-					total = total.subtract(tempQuantity.multiply(tempPrice));
+					total = total.subtract(fullSpecials.multiply(tempPrice).multiply(tempSpecial.getNumNeeded()));
 					
 					//Add the special price
 					total = total.add(tempSpecial.getSpecValue());
+					
 				}
 				
 			}
@@ -152,7 +184,13 @@ public class CheckoutBasket {
 		
 		if(index != -1)
 		{
-			basketList.remove(index);
+			basketList.get(index).setQuantity(basketList.get(index).getQuantity().subtract(new BigDecimal("1")));
+			
+			if(basketList.get(index).getQuantity().compareTo(BigDecimal.ZERO) == 0)
+			{
+				basketList.remove(index);
+			}
+			
 			this.total = calcBasketTotal();
 		}
 	}

@@ -121,6 +121,15 @@ public class Item {
 		private BigDecimal numUpTo = new BigDecimal("0.00");
 		private BigDecimal discPercentage = new BigDecimal("0.00");
 		private BigDecimal specValue = new BigDecimal("0.00");
+		private BigDecimal itemLimit = new BigDecimal("0.00");
+		
+		
+		public BigDecimal getItemLimit() {
+			return itemLimit;
+		}
+		public void setItemLimit(BigDecimal itemLimit) {
+			this.itemLimit = itemLimit;
+		}
 		
 		public BigDecimal getSpecValue() {
 			return specValue;
