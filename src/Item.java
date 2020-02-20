@@ -112,7 +112,7 @@ public class Item {
 	}
 	
 	enum specialType {
-		NONE, BUY_N_GET_M_AT_X_PERCENT_OFF, BUY_N_ITEMS_FOR_X_DOLLARS
+		NONE, BUY_N_GET_M_AT_X_PERCENT_OFF, BUY_N_ITEMS_FOR_X_DOLLARS, BUY_N_GET_M_AT_X_PERCENT_OFF_WEIGHT
 	}
 	
 	public class Special {

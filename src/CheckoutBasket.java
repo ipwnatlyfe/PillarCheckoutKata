@@ -118,6 +118,36 @@ public class CheckoutBasket {
 				
 			}
 			
+			else if(tempSpecial.getType()== Item.specialType.BUY_N_GET_M_AT_X_PERCENT_OFF_WEIGHT && tempWeight.compareTo(BigDecimal.ZERO) > 0)
+			{
+				viableItems = tempWeight;
+				// If the number of items is greater than the number of viable items for the special, and the lmit is non-zero
+				// set to the quantity available to special to the limit
+				
+				if(tempQuantity.compareTo(tempItemLimit)>0 && tempItemLimit.compareTo(BigDecimal.ZERO) > 0)
+				{
+					viableItems = tempItemLimit;
+				}
+				// Viable items / (N+M) is the total amount of fully utilized specials
+				BigDecimal fullSpecials = viableItems.divide(tempSpecial.getNumNeeded().add(tempSpecial.getNumUpTo()),0, RoundingMode.FLOOR);
+				
+				// Get the integer value of fullSpecials
+				fullSpecials.setScale(0,RoundingMode.FLOOR);
+				
+				// Subtract the total complete specials. (complete specials) * (number of discounted items per special) * (discount percentage) * (unit price)
+				total = total.subtract(fullSpecials.multiply(HelperUtils.percentage(tempSpecial.getNumUpTo(), tempSpecial.getDiscPercentage()).multiply(tempPrice)));
+				
+				// THere could still be a few unit items that weren't counted if they weren't part a few specials, subtract those next e.g. 
+				// if you buy N and get M and X percent off, if you get a number L < M , they should still get the discount
+				
+				viableItems = viableItems.subtract(fullSpecials.multiply(tempSpecial.getNumNeeded().add(tempSpecial.getNumUpTo())));
+				
+				if (viableItems.compareTo(tempSpecial.getNumNeeded()) >= 0 )
+				{
+					total = total.subtract(HelperUtils.percentage(viableItems.remainder(tempSpecial.getNumNeeded()), tempSpecial.getDiscPercentage()).multiply(tempPrice));
+				}
+			}
+			
 			
 						
 		}
@@ -184,6 +214,8 @@ public class CheckoutBasket {
 		
 		if(index != -1)
 		{
+			
+			//TODO: Add a remove for weight rather than just quantity
 			basketList.get(index).setQuantity(basketList.get(index).getQuantity().subtract(new BigDecimal("1")));
 			
 			if(basketList.get(index).getQuantity().compareTo(BigDecimal.ZERO) == 0)

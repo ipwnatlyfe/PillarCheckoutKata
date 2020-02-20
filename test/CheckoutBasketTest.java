@@ -255,5 +255,39 @@ public class CheckoutBasketTest {
 		assertEquals("4.00", basket.getTotal().toString());
 		
 	}
+	
+	@Test
+	public void buyNGetMXPercentOffWeight()
+	{		
+		Item myItem = new Item();
+		Item.Special currSpecial = myItem.new Special();
+		
+		myItem.setName("ground beef");
+		myItem.setUnitPrice("1.99");
+		myItem.setWeight("1.2");
+		
+		currSpecial.setType(Item.specialType.BUY_N_GET_M_AT_X_PERCENT_OFF_WEIGHT);
+		currSpecial.setDiscPercentage(new BigDecimal("50"));
+		currSpecial.setNumNeeded(new BigDecimal("3"));
+		currSpecial.setNumUpTo(new BigDecimal("3"));
+
+		myItem.setCurrSpecial(currSpecial);
+		
+		basket.scan(myItem);
+		basket.scan(myItem);
+		basket.scan(myItem);
+		basket.scan(myItem);
+		basket.scan(myItem);
+		basket.scan(myItem);
+		
+		//7.2 total pounds added @ 1.99 per pound with buy 3 get 3 50% off
+		
+		
+		//Assuming that to get the discount, the promotion requires that the
+		// full N in get N at X% off is required
+		
+		assertEquals("11.34", basket.getTotal().toString());			
+		
+	}
 
 }
