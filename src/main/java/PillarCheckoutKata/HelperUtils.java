@@ -1,4 +1,4 @@
-package com.pillar;
+package PillarCheckoutKata;
 import java.math.BigDecimal;
 
 public class HelperUtils {

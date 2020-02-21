@@ -1,3 +1,4 @@
+package PillarCheckoutKata;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -5,8 +6,8 @@ import java.math.BigDecimal;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.pillar.CheckoutBasket;
-import com.pillar.Item;
+import PillarCheckoutKata.CheckoutBasket;
+import PillarCheckoutKata.Item;
 
 
 public class CheckoutBasketTest {
