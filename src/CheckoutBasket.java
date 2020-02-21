@@ -208,6 +208,7 @@ public class CheckoutBasket {
 		return -1;
 	}
 	
+	//TODO: Add a remove method that takes in a string
 	public void remove(Item myItem)
 	{
 		int index = itemInBasket(myItem.getName());
@@ -215,7 +216,7 @@ public class CheckoutBasket {
 		if(index != -1)
 		{
 			
-			//TODO: Add a remove for weight rather than just quantity
+			
 			basketList.get(index).setQuantity(basketList.get(index).getQuantity().subtract(new BigDecimal("1")));
 			
 			if(basketList.get(index).getQuantity().compareTo(BigDecimal.ZERO) == 0)

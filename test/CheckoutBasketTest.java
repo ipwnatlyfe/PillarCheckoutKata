@@ -289,5 +289,33 @@ public class CheckoutBasketTest {
 		assertEquals("11.34", basket.getTotal().toString());			
 		
 	}
+	
+	@Test
+	public void removeWeightedItemFromCartInvalidatingSpecial()
+	{
+		Item myItem = new Item();
+		Item.Special currSpecial = myItem.new Special();
+		
+		myItem.setName("ground beef");
+		myItem.setUnitPrice("2.00");
+		myItem.setWeight("6.50");
+		
+		currSpecial.setType(Item.specialType.BUY_N_GET_M_AT_X_PERCENT_OFF_WEIGHT);
+		currSpecial.setDiscPercentage(new BigDecimal("100"));
+		currSpecial.setNumNeeded(new BigDecimal("3"));
+		currSpecial.setNumUpTo(new BigDecimal("3"));
+		currSpecial.setItemLimit(new BigDecimal("6"));
+
+		myItem.setCurrSpecial(currSpecial);
+		
+		basket.scan(myItem);
+		basket.scan(myItem);
+
+
+		assertEquals("14.00", basket.getTotal().toString());
+		basket.remove(myItem);
+		
+		assertEquals("0.00", basket.getTotal().toString());
+	}
 
 }
