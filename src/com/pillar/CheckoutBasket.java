@@ -1,3 +1,4 @@
+package com.pillar;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -226,6 +227,11 @@ public class CheckoutBasket {
 			
 			this.total = calcBasketTotal();
 		}
+	}
+	
+	public static void main(String[] args)
+	{
+		
 	}
 	
 	

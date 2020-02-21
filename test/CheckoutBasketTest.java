@@ -5,6 +5,9 @@ import java.math.BigDecimal;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.pillar.CheckoutBasket;
+import com.pillar.Item;
+
 
 public class CheckoutBasketTest {
 	

@@ -1,3 +1,4 @@
+package com.pillar;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -111,7 +112,7 @@ public class Item {
 		this.currSpecial = currSpecial;
 	}
 	
-	enum specialType {
+	public enum specialType {
 		NONE, BUY_N_GET_M_AT_X_PERCENT_OFF, BUY_N_ITEMS_FOR_X_DOLLARS, BUY_N_GET_M_AT_X_PERCENT_OFF_WEIGHT
 	}
 	
